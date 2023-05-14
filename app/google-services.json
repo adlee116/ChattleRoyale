@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "445602041711",
+    "project_id": "chattle-royale-4607f",
+    "storage_bucket": "chattle-royale-4607f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:445602041711:android:3f7f350c0292d6ab48e29a",
+        "android_client_info": {
+          "package_name": "com.aleet.chattleroyale"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "445602041711-nplgpjdfju31cpmabpn1bqebaf1abmoq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aleet.chattleroyale",
+            "certificate_hash": "e52bd76c264e4272cf94719ebec4691880fe5f2e"
+          }
+        },
+        {
+          "client_id": "445602041711-inb8tfn13gogcnngr3lh7t5penopuhc5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCr0Smj6DMDymoLw3L7R0Dy-rT9eic10_Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "445602041711-inb8tfn13gogcnngr3lh7t5penopuhc5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
