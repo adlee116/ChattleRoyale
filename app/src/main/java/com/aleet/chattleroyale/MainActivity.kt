@@ -1,11 +1,22 @@
 package com.aleet.chattleroyale
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material3.Surface
+import com.aleet.chattleroyale.presentation.login.NavGraphs
+import com.aleet.chattleroyale.presentation.theme.ChattleRoyaleTheme
+import com.ramcosta.composedestinations.DestinationsNavHost
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContent {
+            ChattleRoyaleTheme {
+                Surface { DestinationsNavHost(navGraph = NavGraphs.root) }
+            }
+        }
     }
 }
