@@ -1,4 +1,4 @@
-package com.squadsandshots_android.core.utils
+package com.aleet.chattleroyale.utils
 
 sealed class Result<out S, out F : Exception> {
 

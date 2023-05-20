@@ -5,7 +5,7 @@ import com.google.firebase.auth.AuthResult
 import io.grpc.internal.SharedResourceHolder
 import kotlinx.coroutines.flow.Flow
 
-interface AuthRepository {
+interface AuthRepositoryInterface {
 
     fun googleSignIn(credential: AuthCredential): Flow<SharedResourceHolder.Resource<AuthResult>>
 }

@@ -1,11 +1,11 @@
-package com.squadsandshots_android.useCases
+package com.aleet.chattleroyale.useCases
 
+import com.aleet.chattleroyale.repositories.DatabaseAuthRepoInterface
+import com.aleet.chattleroyale.requestModels.LoginRequest
+import com.aleet.chattleroyale.utils.BaseUseCase
+import com.aleet.chattleroyale.utils.Result
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
-import com.squadsandshots_android.core.utils.BaseUseCase
-import com.squadsandshots_android.core.utils.Result
-import com.squadsandshots_android.repositories.DatabaseAuthRepoInterface
-import com.squadsandshots_android.requestModels.LoginRequest
 import javax.inject.Inject
 
 class LoginUseCase @Inject constructor(
@@ -21,3 +21,4 @@ class LoginUseCase @Inject constructor(
     }
 
 }
+

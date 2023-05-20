@@ -1,6 +1,6 @@
-package com.squadsandshots_android.localStorage
+package com.aleet.chattleroyale.localStorage
 
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 class LocalStorageRepository @Inject constructor(private val storageLocation: LocalStorageInterface) {

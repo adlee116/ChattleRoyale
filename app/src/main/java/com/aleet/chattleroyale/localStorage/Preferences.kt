@@ -1,4 +1,4 @@
-package com.squadsandshots_android.localStorage
+package com.aleet.chattleroyale.localStorage
 
 import android.content.SharedPreferences
 import com.google.gson.Gson

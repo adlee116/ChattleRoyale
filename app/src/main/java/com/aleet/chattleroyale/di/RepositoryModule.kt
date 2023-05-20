@@ -1,16 +1,16 @@
-package com.squadsandshots_android.di
+package com.aleet.chattleroyale.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.aleet.chattleroyale.localStorage.BasePreferences
+import com.aleet.chattleroyale.localStorage.LocalStorageInterface
+import com.aleet.chattleroyale.localStorage.Preferences
+import com.aleet.chattleroyale.localStorage.SharedPreferencesStorage
+import com.aleet.chattleroyale.repositories.DatabaseAuthRepoInterface
+import com.aleet.chattleroyale.repositories.DatabaseRepositoryInterface
+import com.aleet.chattleroyale.repositories.FirebaseAuthRepo
+import com.aleet.chattleroyale.repositories.FirebaseRepo
 import com.google.gson.Gson
-import com.squadsandshots_android.localStorage.BasePreferences
-import com.squadsandshots_android.localStorage.LocalStorageInterface
-import com.squadsandshots_android.localStorage.Preferences
-import com.squadsandshots_android.localStorage.SharedPreferencesStorage
-import com.squadsandshots_android.repositories.DatabaseAuthRepoInterface
-import com.squadsandshots_android.repositories.DatabaseRepositoryInterface
-import com.squadsandshots_android.repositories.FirebaseAuthRepo
-import com.squadsandshots_android.repositories.FirebaseRepo
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -1,165 +1,150 @@
-package com.squadsandshots_android.presentation.homePage
+package com.aleet.chattleroyale.presentation.homePage
 
-import android.widget.Toast
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.LightGray
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.capitalize
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
+import com.aleet.chattleroyale.R
+import com.aleet.chattleroyale.presentation.theme.AccentColor1
+import com.aleet.chattleroyale.presentation.theme.AccentColor2
+import com.aleet.chattleroyale.presentation.theme.PrimaryColor
+import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.squadsandshots_android.presentation.destinations.HomePageDestination
-import com.squadsandshots_android.presentation.destinations.MainGameRoomDestination
-import com.squadsandshots_android.presentation.destinations.PreGamePageDestination
-import com.squadsandshots_android.presentation.login.TextFieldWithHint
-import com.squadsandshots_android.presentation.models.CreateGameStart
-import com.squadsandshots_android.presentation.models.GameType
-import com.squadsandshots_android.presentation.models.StartGameDetails
-import java.util.*
 
-@ExperimentalCoilApi
 @Destination
 @Composable
-fun HomePage(navigator: DestinationsNavigator, viewModel: HomePageViewModel = hiltViewModel()) {
-    val context = LocalContext.current
-    Box() {
-        var yourName by rememberSaveable { mutableStateOf("") }
-        var dialogState by rememberSaveable { mutableStateOf(false) }
-        GameSelection(dialogState = dialogState, onDismissRequest = {
-            dialogState = !it
-        }, navigator = navigator, viewModel = viewModel)
+fun HomePage() {
+
+    Surface(color = LightGray) {
         Column(
             modifier = Modifier
                 .fillMaxSize(),
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TextFieldWithHint(
-                labelText = "Your name",
-                password = false,
-                onValueChanged = {
-                    yourName = it
-                    viewModel.playerName = it
-                })
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                HomePageButton("Create game") {
-                    if (yourName.isEmpty()) {
-                        Toast.makeText(context, "Please add your name", Toast.LENGTH_SHORT).show()
-                    } else {
-                        dialogState = true
-                    }
-                }
-                HomePageButton("Join game") {}
-            }
-        }
-    }
-}
+            Spacer(modifier = Modifier.height(50.dp))
 
-@Composable
-fun HomePageButton(buttonText: String, onClick: () -> Unit) {
-    Button(onClick = onClick) {
-        Text(buttonText, textAlign = TextAlign.Center)
-    }
-}
+            val drawable = AppCompatResources.getDrawable(LocalContext.current, R.drawable.baseline_person_24)
+            Image(
+                painter = rememberDrawablePainter(drawable = drawable),
+                contentDescription = "content description",
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(CircleShape)
+            )
 
-@ExperimentalCoilApi
-@Composable
-fun GameSelection(
-    dialogState: Boolean,
-    navigator: DestinationsNavigator,
-    viewModel: HomePageViewModel,
-    onDismissRequest: (dialogState: Boolean) -> Unit
-) {
-    if (dialogState) {
-        Dialog(
-            onDismissRequest = { onDismissRequest(dialogState) },
-            DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)
-        ) {
-            Surface(
+            Spacer(modifier = Modifier.height(50.dp))
+
+            Button(
+                onClick = { /* TODO: Handle Create game */ },
+                colors = ButtonDefaults.buttonColors(containerColor = PrimaryColor),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(300.dp),
-                shape = RoundedCornerShape(8.dp)
+                    .padding(16.dp)
             ) {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    ImageAndText(
-                        imageUrl = "https://droidjournal.com/wp-content/uploads/2020/04/COD.jpg",
-                        text = GameType.WARZONE.gameName
-                    ) {
-                        navigator.navigate(PreGamePageDestination(
-                            viewModel.createStartGameDetails(GameType.WARZONE)
-                        ))
-                    }
-                    ImageAndText(
-                        imageUrl = "https://img.redbull.com/images/c_crop,x_71,y_0,h_1080,w_1620/c_fill,w_1500,h_1000/q_auto,f_auto/redbullcom/2019/02/12/0394f2ac-e96d-4b24-8268-a7346fcbd206/apex-legends",
-                        text = GameType.APEX.gameName
-                    ) {
-                        navigator.navigate(PreGamePageDestination(
-                            viewModel.createStartGameDetails(GameType.APEX)
-                        ))
-                    }
-                    ImageAndText(
-                        imageUrl = "https://cdn2.unrealengine.com/14br-consoles-1920x1080-wlogo-1920x1080-432974386.jpg",
-                        text = GameType.FORTNITE.gameName
-                    ) {
-                        navigator.navigate(PreGamePageDestination(
-                            viewModel.createStartGameDetails(GameType.FORTNITE)
-                        ))
-                    }
-                }
+                Text(text = "Create game", color = Color.White)
             }
+
+            Button(
+                onClick = { /* TODO: Handle Join game */ },
+                colors = ButtonDefaults.buttonColors(containerColor = AccentColor1),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text(text = "Join game", color = Color.White)
+            }
+
+            Button(
+                onClick = { /* TODO: Handle High scores */ },
+                colors = ButtonDefaults.buttonColors(containerColor = AccentColor2),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text(text = "High scores", color = Color.White)
+            }
+
+            Spacer(modifier = Modifier.height(50.dp))
         }
     }
 }
 
-@ExperimentalCoilApi
-@Composable
-fun ImageAndText(imageUrl: String, text: String, clickGame: (String) -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { clickGame(text) }
-            .border(
-                width = 2.dp,
-                brush = Brush.horizontalGradient(
-                    listOf(
-                        Color.Red,
-                        Color.Blue
-                    )
-                ),
-                shape = RoundedCornerShape(0.dp)
-            ),
-        horizontalArrangement = Arrangement.SpaceEvenly
-    ) {
-        Image(
-            painter = rememberImagePainter(imageUrl),
-            contentDescription = null,
-            modifier = Modifier.size(100.dp)
-        )
-        Text(text = text, modifier = Modifier.align(Alignment.CenterVertically))
-    }
-}
+//fun HomePage(navigator: DestinationsNavigator, viewModel: HomePageViewModel = hiltViewModel()) {
+//    val context = LocalContext.current
+//    Box() {
+//        var yourName by rememberSaveable { mutableStateOf("") }
+//        var dialogState by rememberSaveable { mutableStateOf(false) }
+//        Column(
+//            modifier = Modifier
+//                .fillMaxSize(),
+//            verticalArrangement = Arrangement.Center
+//        ) {
+//            TextFieldWithHint(
+//                labelText = "Your name",
+//                password = false,
+//                onValueChanged = {
+//                    yourName = it
+//                    viewModel.playerName = it
+//                })
+//            Row(
+//                modifier = Modifier.fillMaxWidth(),
+//                horizontalArrangement = Arrangement.SpaceEvenly
+//            ) {
+//                HomePageButton("Create game") {
+//                    if (yourName.isEmpty()) {
+//                        Toast.makeText(context, "Please add your name", Toast.LENGTH_SHORT).show()
+//                    } else {
+//                        dialogState = true
+//                    }
+//                }
+//                HomePageButton("Join game") {}
+//            }
+//        }
+//    }
+//}
+//
+//@Composable
+//fun HomePageButton(buttonText: String, onClick: () -> Unit) {
+//    Button(onClick = onClick) {
+//        Text(buttonText, textAlign = TextAlign.Center)
+//    }
+//}
+
+///*
+//@Composable
+//fun ChatBubble(message: Message, userProfileUrl: String) {
+//    val painter = rememberGlidePainter(userProfileUrl)
+//
+//    Row(modifier = Modifier.padding(8.dp)) {
+//        Image(
+//            painter = painter,
+//            contentDescription = "User profile picture",
+//            modifier = Modifier.size(40.dp),
+//        )
+//        Text(
+//            text = message.content,
+//            modifier = Modifier.padding(start = 8.dp)
+//        )
+//    }
+//}
+//*/

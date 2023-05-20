@@ -1,4 +1,4 @@
-package com.squadsandshots_android.repositories
+package com.aleet.chattleroyale.repositories
 
 import com.google.firebase.database.DatabaseReference
 
@@ -7,10 +7,4 @@ interface DatabaseRepositoryInterface {
 
     fun postToDatabase(path: String, id: String, postValue: Any)
 
-    companion object {
-        val ROOM = "room"
-        val PLAYERS = "players"
-        val RULES = "rules"
-        val DRINKS = "drinks"
-    }
 }

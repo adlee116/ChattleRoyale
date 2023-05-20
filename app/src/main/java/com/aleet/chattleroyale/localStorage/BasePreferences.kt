@@ -1,4 +1,4 @@
-package com.squadsandshots_android.localStorage
+package com.aleet.chattleroyale.localStorage
 
 import android.content.SharedPreferences
 import androidx.core.content.edit

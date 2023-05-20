@@ -1,10 +1,10 @@
-package com.squadsandshots_android.repositories
+package com.aleet.chattleroyale.repositories
 
-
+import com.aleet.chattleroyale.models.User
+import com.aleet.chattleroyale.requestModels.LoginRequest
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
-import com.squadsandshots_android.requestModels.LoginRequest
 
 interface DatabaseAuthRepoInterface {
     fun createUser(createUserRequest: LoginRequest): Task<AuthResult>
@@ -12,4 +12,5 @@ interface DatabaseAuthRepoInterface {
     fun getCurrentUser(): FirebaseUser?
     fun sendPasswordResetRequest(email: String): Task<Void>
     fun verifyPasswordResetCode(code: String): Task<String>
+    fun createCRUser(userRequest: User)
 }

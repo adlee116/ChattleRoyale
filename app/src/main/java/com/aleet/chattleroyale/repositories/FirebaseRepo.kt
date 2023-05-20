@@ -1,4 +1,4 @@
-package com.squadsandshots_android.repositories
+package com.aleet.chattleroyale.repositories
 
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database

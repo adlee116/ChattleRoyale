@@ -1,28 +1,18 @@
-package com.squadsandshots_android.useCases
+package com.aleet.chattleroyale.useCases
 
-import com.squadsandshots_android.core.utils.BaseUseCase
-import com.squadsandshots_android.core.utils.Result
-import com.squadsandshots_android.firebaseModels.Player
-import com.squadsandshots_android.localStorage.LocalStorageInterface
-import java.util.*
+import com.aleet.chattleroyale.models.User
+import com.aleet.chattleroyale.repositories.FirebaseAuthRepo
+import com.aleet.chattleroyale.utils.BaseUseCase
+import com.aleet.chattleroyale.utils.Result
 import javax.inject.Inject
-import kotlin.Exception
 
-class GetOrCreateUniqueUserUseCase @Inject constructor(
-    val localStorage: LocalStorageInterface
-) : BaseUseCase<Player, String>() {
-    override suspend fun run(params: String): Result<Player, Exception> {
+class CreateInitialUserUseCase @Inject constructor(
+    private val firebaseAuthRepo: FirebaseAuthRepo
+) : BaseUseCase<Unit, User>() {
+    override suspend fun run(params: User): Result<Unit, Exception> {
         return try {
-            localStorage.getPlayer()?.let {
-                if(it.name != params) {
-                    it.name = params
-                    localStorage.setPlayer(it)
-                }
-                return Result.Success(it)
-            } ?: run {
-                val newPlayerItem = Player(UUID.randomUUID().toString(), params)
-                return Result.Success(newPlayerItem)
-            }
+            firebaseAuthRepo.createCRUser(params)
+            Result.Success(Unit)
         } catch (ex: Exception) {
             Result.Failure(ex)
         }

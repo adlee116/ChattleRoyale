@@ -1,4 +1,4 @@
-package com.squadsandshots_android.core.utils
+package com.aleet.chattleroyale.utils
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope

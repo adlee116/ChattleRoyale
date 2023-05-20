@@ -1,4 +1,4 @@
-package com.squadsandshots_android.presentation.signUp
+package com.aleet.chattleroyale.signUp
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

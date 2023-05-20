@@ -2,4 +2,6 @@
     <string name="app_name">ChattleRoyale</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
+    <string name="confirmPassword">Confirm Password</string>
+    <string name="webClientId">445602041711-s7edlnss8pkofrp43tpm6le3jehiptas.apps.googleusercontent.com</string>
 </resources>
