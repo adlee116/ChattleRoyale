@@ -1,9 +1,9 @@
 package com.aleet.chattleroyale.presentation.login
 
 import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -30,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -55,10 +56,11 @@ import androidx.lifecycle.lifecycleScope
 import com.aleet.chattleroyale.R
 import com.aleet.chattleroyale.destinations.HomePageDestination
 import com.aleet.chattleroyale.destinations.SignUpPageDestination
-import com.aleet.chattleroyale.presentation.authorisation.GoogleAuthUiClient
 import com.aleet.chattleroyale.presentation.authorisation.SignInState
 import com.aleet.chattleroyale.presentation.theme.PrimaryColor
 import com.aleet.chattleroyale.requestModels.LoginRequest
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.ramcosta.composedestinations.annotation.Destination
@@ -66,46 +68,29 @@ import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
 
-@RootNavGraph(start = true) // sets this as the start destination of the default nav graph
+@RootNavGraph(start = true)
 @Destination
 @Composable
 fun LoginPage(navController: DestinationsNavigator, viewModel: LoginViewModel = hiltViewModel()) {
-    val loginRequest by rememberSaveable { mutableStateOf(LoginRequest()) }
-    val lifecycleScope = LocalLifecycleOwner.current.lifecycleScope
     val context = LocalContext.current
+    val lifecycleScope = rememberCoroutineScope()
+    val loginRequest by rememberSaveable { mutableStateOf(LoginRequest()) }
     val currentUser = Firebase.auth.currentUser
-
-    val googleAuthUiClient by lazy {
-        GoogleAuthUiClient(
-            context = context,
-            oneTapClient = com.google.android.gms.auth.api.identity.Identity.getSignInClient(context)
-        )
-    }
-
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartIntentSenderForResult(),
-        onResult = { result ->
-            if (result.resultCode == RESULT_OK) {
-                lifecycleScope.launch {
-                    val signInResult = googleAuthUiClient.signInWithIntent(
-                        intent = result.data ?: return@launch
-                    )
-                    viewModel.onSignInResult(signInResult)
-                }
-            }
-        }
-    )
-
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(key1 = state.isSignInSuccessful) {
-        if(state.isSignInSuccessful) {
-            Toast.makeText(
-                context,
-                "Sign in successful",
-                Toast.LENGTH_LONG
-            ).show()
+    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == RESULT_OK) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            viewModel.handleSignInResult(task)
         }
+    }
+    LaunchedEffect(key1 = Unit) {
+        val gso: GoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(context.getString(R.string.webClientId))
+            .requestEmail()
+            .build()
+        val googleSignInClient = GoogleSignIn.getClient(context, gso)
+        viewModel.setGoogleSignInClient(googleSignInClient)
     }
 
     SetupViewModelListener(viewModel = viewModel, navController = navController)
@@ -139,146 +124,13 @@ fun LoginPage(navController: DestinationsNavigator, viewModel: LoginViewModel = 
         ) {
             SignInScreen(state = state, onSignInClick = {
                 lifecycleScope.launch {
-                    val signInIntentSender = googleAuthUiClient.signIn()
-                    launcher.launch(
-                        IntentSenderRequest.Builder(
-                            signInIntentSender ?: return@launch
-                        ).build()
-                    )
+                    val signInIntent: Intent? = viewModel.googleSignInClient.value?.signInIntent
+                    launcher.launch(signInIntent)
                 }
             })
         }
     }
 }
-
-
-//@RootNavGraph(start = true) // sets this as the start destination of the default nav graph
-//@Destination
-//@Composable
-//fun LoginPage(navController: DestinationsNavigator, viewModel: LoginViewModel = hiltViewModel()) {
-//    val loginRequest by rememberSaveable { mutableStateOf(LoginRequest()) }
-//    val lifecycleScope = LocalLifecycleOwner.current.lifecycleScope
-//    val context = LocalContext.current
-//    val currentUser = Firebase.auth.currentUser
-//
-//    var oneTapClient: SignInClient = Identity.getSignInClient(context)
-//    var signInRequest: BeginSignInRequest = BeginSignInRequest.builder()
-//        .setPasswordRequestOptions(BeginSignInRequest.PasswordRequestOptions.builder()
-//            .setSupported(true)
-//            .build())
-//        .setGoogleIdTokenRequestOptions(
-//            BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-//                .setSupported(true)
-//                // Your server's client ID, not your Android client ID.
-//                .setServerClientId(context.getString(R.string.webClientId))
-//                // Only show accounts previously used to sign in.
-//                .setFilterByAuthorizedAccounts(true)
-//                .build())
-//        // Automatically sign in when exactly one credential is retrieved.
-//        .setAutoSelectEnabled(true)
-//        .build()
-//
-//    oneTapClient.beginSignIn(signInRequest)
-//        .addOnSuccessListener(context as Activity) { result ->
-//            try {
-//                startIntentSenderForResult(
-//                    result.pendingIntent.intentSender, REQ_ONE_TAP,
-//                    null, 0, 0, 0, null)
-//            } catch (e: IntentSender.SendIntentException) {
-//                Log.e("TAG - LOGIN", "Couldn't start One Tap UI: ${e.localizedMessage}")
-//            }
-//        }
-//        .addOnFailureListener(this) { e ->
-//            // No saved credentials found. Launch the One Tap sign-up flow, or
-//            // do nothing and continue presenting the signed-out UI.
-//            Log.d(TAG, e.localizedMessage)
-//        }
-//
-//    // TODO HERE ----------------------------------------------------
-//    val signInReq = BeginSignInRequest.builder()
-//        .setGoogleIdTokenRequestOptions(GoogleIdTokenRequestOptions.builder()
-//            .setSupported(true)
-//            .setServerClientId(context.getString(R.string.webClientId))
-//            .setFilterByAuthorizedAccounts(true)
-//            .build())
-//
-//
-//    val googleAuthUiClient by lazy {
-//        GoogleAuthUiClient(
-//            context = context,
-//            oneTapClient = com.google.android.gms.auth.api.identity.Identity.getSignInClient(context)
-//        )
-//    }
-//    //TODO here -------------------------------------------------------
-//
-//
-//    SetupViewModelListener(viewModel = viewModel, navController = navController)
-//    Column(
-//        modifier = Modifier.fillMaxSize(),
-//        verticalArrangement = Arrangement.SpaceBetween
-//    ) {
-//        Spacer(modifier = Modifier.height(10.dp))
-//        ChattleRoyaleImage() // Moved to the top of the Column
-//        Spacer(modifier = Modifier.weight(0.5f)) // Consumes extra space
-//        LoginCenterContent(loginRequest = loginRequest)
-//        Row(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(horizontal = 16.dp, vertical = 16.dp),
-//            horizontalArrangement = SpaceEvenly
-//        ) {
-//            LoginButton(onClick = {
-//                viewModel.process(LoginViewModel.LoginViewEvent.LoginClicked(loginRequest))
-//            }, loginRequest)
-//            SignUpButton(onClick = {
-//                navController.navigate(SignUpPageDestination())
-//            })
-//        }
-//        Spacer(modifier = Modifier.weight(2f)) // Consumes extra space and provides more weight than other Spacers, making more space at the bottom.
-//        // Empty column for other means of login
-//        Column(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(vertical = 16.dp)
-//        ) {
-//            val state by viewModel.state.collectAsStateWithLifecycle()
-//            val launcher = rememberLauncherForActivityResult(
-//                contract = ActivityResultContracts.StartIntentSenderForResult(),
-//                onResult = { result ->
-//                    if (result.resultCode == RESULT_OK) {
-//                        lifecycleScope.launch {
-//                            val signInResult = googleAuthUiClient.signInWithIntent(
-//                                intent = result.data ?: return@launch
-//                            )
-//                            viewModel.onSignInResult(signInResult)
-//                        }
-//                    }
-//                }
-//            )
-//
-//            LaunchedEffect(key1 = state.isSignInSuccessful) {
-//                if(state.isSignInSuccessful) {
-//                    Toast.makeText(
-//                        context,
-//                        "Sign in successful",
-//                        Toast.LENGTH_LONG
-//                    ).show()
-//                }
-//            }
-//
-//            SignInScreen(state = state, onSignInClick = {
-//                lifecycleScope.launch {
-//                    val signInIntentSender = googleAuthUiClient.signIn()
-//                    launcher.launch(
-//                        IntentSenderRequest.Builder(
-//                            signInIntentSender ?: return@launch
-//                        ).build()
-//                    )
-//                }
-//            })
-//        }
-//    }
-//}
 
 @Composable
 fun SetupViewModelListener(viewModel: LoginViewModel, navController: DestinationsNavigator) {
@@ -396,7 +248,7 @@ fun ChattleRoyaleImage() {
 @Composable
 fun SignInScreen(
     state: SignInState,
-    onSignInClick: () -> Unit
+    onSignInClick: () -> Unit,
 ) {
     val context = LocalContext.current
     LaunchedEffect(key1 = state.signInError) {
@@ -411,11 +263,9 @@ fun SignInScreen(
             .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
-        Button(onClick = onSignInClick) {
-            Text(text = "Sign in")
+        Button(onClick = { onSignInClick() }) {
+            Text(text = "Login with Google")
         }
     }
-
-
 }
 
