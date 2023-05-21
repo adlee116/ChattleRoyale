@@ -1,12 +1,22 @@
 package com.aleet.chattleroyale.presentation.login
 
 import android.text.TextUtils
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aleet.chattleroyale.presentation.authorisation.SignInResult
 import com.aleet.chattleroyale.presentation.authorisation.SignInState
 import com.aleet.chattleroyale.requestModels.LoginRequest
 import com.aleet.chattleroyale.useCases.LoginUseCase
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,6 +38,46 @@ class LoginViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(SignInState())
     val state = _state.asStateFlow()
+
+    private val _googleSignInClient = MutableLiveData<GoogleSignInClient>()
+    val googleSignInClient: LiveData<GoogleSignInClient> = _googleSignInClient
+
+    fun setGoogleSignInClient(googleSignInClient: GoogleSignInClient) {
+        _googleSignInClient.value = googleSignInClient
+    }
+
+    fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
+        try {
+            val account = completedTask.getResult(ApiException::class.java)
+            account?.let { fireBaseAuthWithGoogle(it.idToken!!)}
+        } catch (e: ApiException) {
+            // The exception status code indicates the detailed failure reason
+            // Please refer to the GoogleSignInStatusCodes class reference for more information
+            Log.d("Login", "SignInResult:failed code=" + e.statusCode)
+            //TODO UpdateUi
+        }
+    }
+
+    private fun fireBaseAuthWithGoogle(idToken: String) {
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        FirebaseAuth.getInstance().signInWithCredential(credential)
+            .addOnCompleteListener { task ->
+                if(task.isSuccessful) {
+                    // Sign in success, update UI with signed-in user's information
+                    val user = FirebaseAuth.getInstance().currentUser
+                    updateUserAfterSocialLoginIn(user)
+                } else {
+                    // TODO If sign in fails display a message to the user
+                }
+            }
+    }
+
+    private fun updateUserAfterSocialLoginIn(user: FirebaseUser?) {
+
+        // TODO Store user locally?????
+        // TODO update the user with a use case
+        _events.value = LoginReaction.SuccessfulLogin
+    }
 
 //    fun checkIfUserAlreadyAuthorised() {
 //        getCurrentFireBaseUser.invoke(viewModelScope) { result ->
