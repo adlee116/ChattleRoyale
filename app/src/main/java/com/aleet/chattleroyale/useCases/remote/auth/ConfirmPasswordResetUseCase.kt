@@ -1,8 +1,4 @@
-package com.aleet.chattleroyale.useCases
-
-import com.aleet.chattleroyale.utils.BaseUseCase
-import com.google.android.gms.tasks.Task
-import javax.inject.Inject
+package com.aleet.chattleroyale.useCases.remoteAuth
 
 //class ConfirmPasswordResetUseCase @Inject constructor(val databaseAuthRepoInterface: DatabaseAuthRepoInterface) :
 //    BaseUseCase<Task<String>, String>() {
