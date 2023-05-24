@@ -7,4 +7,11 @@ interface DatabaseRepositoryInterface {
 
     fun postToDatabase(path: String, id: String, postValue: Any)
 
+    companion object {
+        val USERS = "users"
+        val PLAYERS = "players"
+        val RULES = "rules"
+        val DRINKS = "drinks"
+    }
+
 }

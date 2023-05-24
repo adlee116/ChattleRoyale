@@ -13,4 +13,5 @@ interface DatabaseAuthRepoInterface {
     fun sendPasswordResetRequest(email: String): Task<Void>
     fun verifyPasswordResetCode(code: String): Task<String>
     fun createCRUser(userRequest: User)
+
 }

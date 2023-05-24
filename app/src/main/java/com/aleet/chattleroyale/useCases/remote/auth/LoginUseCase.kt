@@ -1,4 +1,4 @@
-package com.aleet.chattleroyale.useCases.remoteAuth
+package com.aleet.chattleroyale.useCases.remote.auth
 
 import com.aleet.chattleroyale.repositories.DatabaseAuthRepoInterface
 import com.aleet.chattleroyale.requestModels.LoginRequest

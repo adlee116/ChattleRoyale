@@ -6,11 +6,4 @@ interface LocalStorageInterface {
 
     fun setUniqueUserId(uniqueId: String)
 
-//    fun setPlayer(player: Player)
-//
-//    fun getPlayer(): Player?
-//
-//    fun getRoom(): BasicRoom?
-//
-//    fun setRoom(room: BasicRoom)
 }

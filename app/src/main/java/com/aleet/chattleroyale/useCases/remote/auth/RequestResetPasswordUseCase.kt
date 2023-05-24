@@ -1,4 +1,4 @@
-package com.aleet.chattleroyale.useCases.remoteAuth
+package com.aleet.chattleroyale.useCases.remote.auth
 
 //class RequestResetPasswordUseCase @Inject constructor(val databaseAuthRepoInterface: DatabaseAuthRepoInterface) :
 //    BaseUseCase<Task<Void>, String>() {

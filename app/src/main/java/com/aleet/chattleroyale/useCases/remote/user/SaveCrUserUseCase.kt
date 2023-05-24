@@ -1,4 +1,4 @@
-package com.aleet.chattleroyale.useCases.user
+package com.aleet.chattleroyale.useCases.remote.user
 
 import com.aleet.chattleroyale.models.User
 import com.aleet.chattleroyale.repositories.UserRemoteRepo

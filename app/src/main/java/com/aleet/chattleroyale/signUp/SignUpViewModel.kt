@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aleet.chattleroyale.models.User
 import com.aleet.chattleroyale.requestModels.LoginRequest
-import com.aleet.chattleroyale.useCases.CreateFireBaseUserUseCase
-import com.aleet.chattleroyale.useCases.CreateInitialUserUseCase
+import com.aleet.chattleroyale.useCases.remote.auth.CreateFireBaseUserUseCase
+import com.aleet.chattleroyale.useCases.remote.user.CreateInitialUserUseCase
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.firestore.FieldValue
 import dagger.hilt.android.lifecycle.HiltViewModel

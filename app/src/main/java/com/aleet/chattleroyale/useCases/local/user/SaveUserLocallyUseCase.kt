@@ -1,4 +1,4 @@
-package com.aleet.chattleroyale.useCases
+package com.aleet.chattleroyale.useCases.local.user
 
 import com.aleet.chattleroyale.localStorage.UserDao
 import com.aleet.chattleroyale.models.User
@@ -15,5 +15,4 @@ class SaveUserLocallyUseCase @Inject constructor(private val userDao: UserDao): 
             Result.Failure(ex)
         }
     }
-
 }
