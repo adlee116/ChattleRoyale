@@ -60,8 +60,6 @@ import com.aleet.chattleroyale.presentation.theme.PrimaryColor
 import com.aleet.chattleroyale.requestModels.LoginRequest
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -74,7 +72,6 @@ fun LoginPage(navController: DestinationsNavigator, viewModel: LoginViewModel = 
     val loginRequest by rememberSaveable { mutableStateOf(LoginRequest()) }
     val lifecycleScope = rememberCoroutineScope()
     val context = LocalContext.current
-    val currentUser = Firebase.auth.currentUser
     val state by viewModel.state.collectAsStateWithLifecycle()
     viewModel.checkIfUserAlreadyAuthorised()
 

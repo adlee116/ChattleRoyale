@@ -4,11 +4,10 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
 import com.aleet.chattleroyale.localStorage.BasePreferences
+import com.aleet.chattleroyale.localStorage.ChattleRoyaleDatabase
 import com.aleet.chattleroyale.localStorage.LocalStorageInterface
 import com.aleet.chattleroyale.localStorage.Preferences
 import com.aleet.chattleroyale.localStorage.SharedPreferencesStorage
-import com.aleet.chattleroyale.localStorage.UserDao
-import com.aleet.chattleroyale.localStorage.UserDatabase
 import com.aleet.chattleroyale.repositories.DatabaseAuthRepoInterface
 import com.aleet.chattleroyale.repositories.DatabaseRepositoryInterface
 import com.aleet.chattleroyale.repositories.FirebaseAuthRepo
@@ -30,6 +29,7 @@ object RepositoryModule {
     fun provideFirebaseAuthDataRepo(): DatabaseAuthRepoInterface {
         return FirebaseAuthRepo()
     }
+
     @Provides
     @Singleton
     fun provideFirebaseDataRepo(): DatabaseRepositoryInterface {
@@ -60,18 +60,14 @@ object RepositoryModule {
         return Gson().newBuilder().create()
     }
 
+    @Singleton
     @Provides
-    fun provideDatabase(@ApplicationContext context: Context): UserDatabase {
+    fun provideDatabase(@ApplicationContext context: Context): ChattleRoyaleDatabase {
         return Room.databaseBuilder(
             context,
-            UserDatabase::class.java,
-            "user_database"
-        ).build()
-    }
-
-    @Provides
-    fun provideUserDao(database: UserDatabase): UserDao {
-        return database.userDao()
+            ChattleRoyaleDatabase::class.java,
+            ChattleRoyaleDatabase.NAME
+        ).fallbackToDestructiveMigration().build()
     }
 
 }

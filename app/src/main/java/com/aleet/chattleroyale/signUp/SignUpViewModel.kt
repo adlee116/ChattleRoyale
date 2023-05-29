@@ -8,7 +8,6 @@ import com.aleet.chattleroyale.requestModels.LoginRequest
 import com.aleet.chattleroyale.useCases.remote.auth.CreateFireBaseUserUseCase
 import com.aleet.chattleroyale.useCases.remote.user.CreateInitialUserUseCase
 import com.google.firebase.auth.AuthResult
-import com.google.firebase.firestore.FieldValue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -51,16 +50,16 @@ class SignUpViewModel @Inject constructor(
     private fun createInitialUser(authResult: AuthResult) {
         val user = authResult.user
         user?.uid?.let {
-            val newUser = User(
-                uid = it,
-                userName = user.displayName,
-                email = user.email,
-                profilePicture = user.photoUrl.toString(),
-                gamesWon = 0,
-                gamesPlayed = 0,
-                lastOnline = FieldValue.serverTimestamp(),
-                friends = hashMapOf()
-            )
+            val newUser = User().apply {
+                uid = it
+                userName = user.displayName ?: ""
+                email = user.email ?: ""
+                profilePicture = user.photoUrl.toString() ?: ""
+                gamesWon = 0
+                gamesPlayed = 0
+                lastOnline = System.currentTimeMillis()
+                this.friends = hashMapOf()
+            }
             createInitialUserUseCase.invoke(viewModelScope, newUser) { result ->
                 result.result(
                     onSuccess = {

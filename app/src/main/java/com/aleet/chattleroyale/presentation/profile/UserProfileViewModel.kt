@@ -6,10 +6,12 @@ import com.aleet.chattleroyale.models.User
 import com.aleet.chattleroyale.useCases.local.user.GetUniqueUserIdUseCase
 import com.aleet.chattleroyale.useCases.local.user.GetUserLocallyUseCase
 import com.aleet.chattleroyale.utils.justValue
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
+@HiltViewModel
 class UserProfileViewModel @Inject constructor(
     private val getUserLocallyUseCase: GetUserLocallyUseCase,
     private val getUniqueUserIdUseCase: GetUniqueUserIdUseCase
@@ -30,7 +32,7 @@ class UserProfileViewModel @Inject constructor(
     }
 
     private fun fetchUser() {
-        val userId = getUniqueUserIdUseCase.justValue(Unit)?.toInt()
+        val userId = getUniqueUserIdUseCase.justValue(Unit)
         userId?.let {
             getUserLocallyUseCase.invoke(viewModelScope, userId) { result ->
                 result.result(

@@ -9,9 +9,6 @@ interface DatabaseRepositoryInterface {
 
     companion object {
         val USERS = "users"
-        val PLAYERS = "players"
-        val RULES = "rules"
-        val DRINKS = "drinks"
     }
 
 }
