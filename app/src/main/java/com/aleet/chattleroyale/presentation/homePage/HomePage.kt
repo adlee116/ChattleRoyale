@@ -2,6 +2,7 @@ package com.aleet.chattleroyale.presentation.homePage
 
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -23,16 +24,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.LightGray
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.aleet.chattleroyale.R
+import com.aleet.chattleroyale.destinations.UserProfileScreenDestination
 import com.aleet.chattleroyale.presentation.theme.AccentColor1
 import com.aleet.chattleroyale.presentation.theme.AccentColor2
 import com.aleet.chattleroyale.presentation.theme.PrimaryColor
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Destination
 @Composable
-fun HomePage() {
+fun HomePage(navController: DestinationsNavigator, viewModel: HomePageViewModel = hiltViewModel()) {
 
     Surface(color = LightGray) {
         Column(
@@ -50,6 +54,9 @@ fun HomePage() {
                 modifier = Modifier
                     .size(100.dp)
                     .clip(CircleShape)
+                    .clickable {
+                        navController.navigate(UserProfileScreenDestination())
+                    }
             )
 
             Spacer(modifier = Modifier.height(50.dp))
@@ -88,47 +95,6 @@ fun HomePage() {
         }
     }
 }
-
-//fun HomePage(navigator: DestinationsNavigator, viewModel: HomePageViewModel = hiltViewModel()) {
-//    val context = LocalContext.current
-//    Box() {
-//        var yourName by rememberSaveable { mutableStateOf("") }
-//        var dialogState by rememberSaveable { mutableStateOf(false) }
-//        Column(
-//            modifier = Modifier
-//                .fillMaxSize(),
-//            verticalArrangement = Arrangement.Center
-//        ) {
-//            TextFieldWithHint(
-//                labelText = "Your name",
-//                password = false,
-//                onValueChanged = {
-//                    yourName = it
-//                    viewModel.playerName = it
-//                })
-//            Row(
-//                modifier = Modifier.fillMaxWidth(),
-//                horizontalArrangement = Arrangement.SpaceEvenly
-//            ) {
-//                HomePageButton("Create game") {
-//                    if (yourName.isEmpty()) {
-//                        Toast.makeText(context, "Please add your name", Toast.LENGTH_SHORT).show()
-//                    } else {
-//                        dialogState = true
-//                    }
-//                }
-//                HomePageButton("Join game") {}
-//            }
-//        }
-//    }
-//}
-//
-//@Composable
-//fun HomePageButton(buttonText: String, onClick: () -> Unit) {
-//    Button(onClick = onClick) {
-//        Text(buttonText, textAlign = TextAlign.Center)
-//    }
-//}
 
 ///*
 //@Composable

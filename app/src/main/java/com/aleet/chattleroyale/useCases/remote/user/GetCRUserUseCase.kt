@@ -1,14 +1,14 @@
-package com.aleet.chattleroyale.useCases.user
+package com.aleet.chattleroyale.useCases.remote.user
 
 import com.aleet.chattleroyale.repositories.UserRemoteRepo
 import com.aleet.chattleroyale.utils.BaseUseCase
 import com.aleet.chattleroyale.utils.Result
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
-import com.google.firebase.database.DataSnapshot
+import com.google.firebase.firestore.DocumentSnapshot
 import javax.inject.Inject
 
-class GetCRUser @Inject constructor(
+class GetCRUserUseCase @Inject constructor(
     private val userRemoteRepo: UserRemoteRepo
 ): BaseUseCase<Boolean, GetCrUserRequest>() {
     override suspend fun run(params: GetCrUserRequest): Result<Boolean, Exception> {
@@ -18,13 +18,13 @@ class GetCRUser @Inject constructor(
             userSnapshot.addOnFailureListener(params.onFailureListener)
             Result.Success(true)
         } catch (ex: Exception) {
-            Result.Failure(ex)
+            Result.Success(false)
         }
     }
 }
 
 data class GetCrUserRequest(
     val id: String,
-    val onSuccessListener: OnSuccessListener<DataSnapshot>,
+    val onSuccessListener: OnSuccessListener<DocumentSnapshot>,
     val onFailureListener: OnFailureListener
 )

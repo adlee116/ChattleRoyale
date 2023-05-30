@@ -2,7 +2,9 @@ package com.aleet.chattleroyale.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.room.Room
 import com.aleet.chattleroyale.localStorage.BasePreferences
+import com.aleet.chattleroyale.localStorage.ChattleRoyaleDatabase
 import com.aleet.chattleroyale.localStorage.LocalStorageInterface
 import com.aleet.chattleroyale.localStorage.Preferences
 import com.aleet.chattleroyale.localStorage.SharedPreferencesStorage
@@ -27,6 +29,7 @@ object RepositoryModule {
     fun provideFirebaseAuthDataRepo(): DatabaseAuthRepoInterface {
         return FirebaseAuthRepo()
     }
+
     @Provides
     @Singleton
     fun provideFirebaseDataRepo(): DatabaseRepositoryInterface {
@@ -57,4 +60,15 @@ object RepositoryModule {
         return Gson().newBuilder().create()
     }
 
+    @Singleton
+    @Provides
+    fun provideDatabase(@ApplicationContext context: Context): ChattleRoyaleDatabase {
+        return Room.databaseBuilder(
+            context,
+            ChattleRoyaleDatabase::class.java,
+            ChattleRoyaleDatabase.NAME
+        ).fallbackToDestructiveMigration().build()
+    }
+
 }
+

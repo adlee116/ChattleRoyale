@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -61,8 +60,6 @@ import com.aleet.chattleroyale.presentation.theme.PrimaryColor
 import com.aleet.chattleroyale.requestModels.LoginRequest
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -75,8 +72,8 @@ fun LoginPage(navController: DestinationsNavigator, viewModel: LoginViewModel = 
     val loginRequest by rememberSaveable { mutableStateOf(LoginRequest()) }
     val lifecycleScope = rememberCoroutineScope()
     val context = LocalContext.current
-    val currentUser = Firebase.auth.currentUser
     val state by viewModel.state.collectAsStateWithLifecycle()
+    viewModel.checkIfUserAlreadyAuthorised()
 
     val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {result ->
         if(result.resultCode == RESULT_OK) {
@@ -142,17 +139,13 @@ fun SetupViewModelListener(viewModel: LoginViewModel, navController: Destination
     lifecycleOwner.lifecycleScope.launchWhenStarted {
         viewModel.events.collect {
             when (it) {
-                is LoginViewModel.LoginReaction.InvalidCredentials -> {
-                    Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
-                }
+                is LoginViewModel.LoginReaction.InvalidCredentials -> { Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show() }
 
-                is LoginViewModel.LoginReaction.FailedLogin -> {
-                    Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
-                }
+                is LoginViewModel.LoginReaction.FailedLogin -> { Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show() }
 
-                LoginViewModel.LoginReaction.SuccessfulLogin -> {
-                    navController.navigate(HomePageDestination())
-                }
+                is LoginViewModel.LoginReaction.FailedUserPersist -> Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+
+                LoginViewModel.LoginReaction.SuccessfulLogin -> { navController.navigate(HomePageDestination()) }
 
                 null -> {}
             }
@@ -264,13 +257,10 @@ fun SignInScreen(
             .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
-//        GoogleButton(
-//            text = "Login with Google",
-//            loadingText = "Logging in...",
-//            onClicked = onSignInClick
-//        )
-        Button(onClick = { onSignInClick() } ) {
-            Text(text = "Login with google")
-        }
+        GoogleButton(
+            text = "Login with Google",
+            loadingText = "Logging in...",
+            onClicked = onSignInClick
+        )
     }
 }

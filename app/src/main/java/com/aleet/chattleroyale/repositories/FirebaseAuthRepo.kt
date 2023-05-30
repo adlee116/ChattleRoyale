@@ -7,6 +7,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -40,8 +41,9 @@ class FirebaseAuthRepo @Inject constructor(): DatabaseAuthRepoInterface {
     }
 
     override fun createCRUser(userRequest: User) {
-        val firestoreUser = firestore.collection("users").document(userRequest.uid)
+        val firestoreUser = firestore.collection(DatabaseRepositoryInterface.USERS).document(userRequest.uid)
         val userData = hashMapOf(
+            "uid" to userRequest.uid,
             "username" to userRequest.userName,
             "email" to userRequest.email,
             "profile_picture" to userRequest.profilePicture,
@@ -56,6 +58,10 @@ class FirebaseAuthRepo @Inject constructor(): DatabaseAuthRepoInterface {
         }.addOnFailureListener { e ->
             Log.w(TAG, "Error creating user", e)
         }
+    }
+
+    override fun getCrUser(id: String): Task<DocumentSnapshot> {
+        return firestore.collection(DatabaseRepositoryInterface.USERS).document(id).get()
     }
 
 
